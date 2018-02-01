@@ -26,11 +26,7 @@ class HomeController < ApplicationController
         end
       end
       
-      
-      
-      
-      
-      # HardWorker.perform_async(file_path=file.path)
+      HardWorker.perform_async(batch=b.id)
       flash[:notice] = 'File Uploaded'
     else
       flash[:notice] = 'Error'
