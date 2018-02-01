@@ -1,0 +1,50 @@
+<body>
+<% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+<h1>Profile Finder</h1>
+<h3>New Batch</h3>
+<p>Upload a CSV containing the headers "fullname", "school", and "business". For a record to be searched "fullname" must be populated with either "school" or "business" (or both)</p>
+ <%= form_for :home, :url => {:action => "upload", :method => "post"}, :html => { :multipart => true } do %>
+      <div>
+        <%= file_field_tag :file %>
+      </div>
+        <%= submit_tag "Upload",'data-disable-with' => "Processing" %>
+<% end %>
+
+<h3>Batches</h3>	
+<table>
+	<tr>
+		<th>Date Created</th>
+		<th>Records</th>
+		<th>Checked</th>
+		<th>Hits</th>
+		<th>Unique Hits</th>
+		<th>Download</th>
+		<th>Delete</th>
+	</tr>
+<% @batches.each do |b|%>
+	<tr>
+		<td><%=b.created_at.to_date%></td>
+		<td style="text-align:center"><%=b.rows.count%></td>
+		<td><%=b.rows.where(checked:true).count%></td>
+		<td><%=b.rows.where.not(unique:nil).count%></td>
+		<td><%=b.rows.where(unique:true).count%></td>
+		<td>
+	<form action="/home/download.csv">
+		<input id="batch" name="batch" type="hidden" value=<%=b.id%> />
+	    <input type="submit" value="Download">
+	</form>
+</td>
+<td><form action="/home/delete.csv">
+		<input id="batch" name="batch" type="hidden" value=<%=b.id%> />
+	    <input type="submit" value="Delete">
+	</form></td>
+</tr>
+<% end %>
+</table>
+</body>
+<style>
+	td {text-align: center;}
+	th {width:100px;}
+</style>
