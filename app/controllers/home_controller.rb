@@ -4,6 +4,7 @@ class HomeController < ApplicationController
   def upload
     if params['file']
       file = params['file']
+      all = []
       
       file_path = file.path
       puts "starting csv"
