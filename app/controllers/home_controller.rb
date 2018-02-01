@@ -6,11 +6,11 @@ class HomeController < ApplicationController
       file = params['file']
       
       file_path = file.path
-      
+      puts "starting csv"
       CSV.foreach(file_path, headers: false, encoding:'iso-8859-1:utf-8') do |row|
         all << row
       end
-      
+      puts "ending csv"
       b = Batch.create
     
       head = all.shift
