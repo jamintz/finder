@@ -35,8 +35,10 @@ b = Batch.find(bid)
       req.add_field("Ocp-Apim-Subscription-Key", key)
       res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => uri.scheme == 'https'){|http|http.request(req)}
       body = JSON.parse(res.body, :symbolize_names => true)
-          
-      results = body[:webPages][:value].select{|x|x[:name].downcase.include?(r.name.downcase)&&x[:displayUrl].include?('linkedin.com')&&!x[:displayUrl].include?('/dir/')}
+      results = []
+      
+      results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.name.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com')&&!x[:displayUrl].include?('/dir/')} if body[:webPages] && body[:webPages][:value]
+
       profiles = results.map{|x|x[:displayUrl]}
       out = []
       profiles.each do |p|
