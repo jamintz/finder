@@ -11,7 +11,10 @@ class Batch < ApplicationRecord
            h = []
            head.each do |x|
              if x == 'profiles'
-             h << JSON.parse(r[x])
+               h << JSON.parse(r[x])
+             else
+               h << r[x]
+             end
            end
            csv << h.flatten
       end
