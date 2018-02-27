@@ -4,6 +4,8 @@ class HardWorker
   require 'net/http'
   
   def get_links(url)
+    key = '86a28e1d290341a698bc74b295a0b0ec'
+    
     uri = URI(url)
     req = Net::HTTP::Get.new(uri.request_uri)
     req.add_field("Ocp-Apim-Subscription-Key", key)
@@ -23,8 +25,6 @@ class HardWorker
   end
 
   def perform(bid)
-    key = '86a28e1d290341a698bc74b295a0b0ec'
-
     b = Batch.find(bid)
     b.rows.each do |r|
       term = "linkedin #{r.name} \"#{r.school}\" #{r.business}"
