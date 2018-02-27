@@ -31,7 +31,7 @@ class HardWorker
       url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
             
       out = get_links(url,r)
-      if r.business && out.count != 1
+      if r.business && out.empty?
         term = "linkedin #{r.name} \"#{r.school}\""
         url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
         out += get_links(url,r)
