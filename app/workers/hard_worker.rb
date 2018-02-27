@@ -3,7 +3,7 @@ class HardWorker
   require 'csv'
   require 'net/http'
   
-  def get_links(url)
+  def get_links(url,r)
     key = '86a28e1d290341a698bc74b295a0b0ec'
     
     uri = URI(url)
@@ -30,11 +30,11 @@ class HardWorker
       term = "linkedin #{r.name} \"#{r.school}\" #{r.business}"
       url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
             
-      out = get_links(url)
+      out = get_links(url,r)
       if r.business && out.count != 1
         term = "linkedin #{r.name} \"#{r.school}\""
         url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
-        out += get_links(url)
+        out += get_links(url,r)
       end
       
       out.uniq!
