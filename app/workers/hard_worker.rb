@@ -43,7 +43,7 @@ b = Batch.find(bid)
       out = []
       profiles.each do |p|
         broke=(p.split("://").first+"://www.linkedin.com"+p.split("linkedin.com").last).split("in/")
-        out << broke.first+broke.last.split("/").first
+        out << broke.first+"in/"+broke.last.split("/").first
       end
       
       out.uniq!
