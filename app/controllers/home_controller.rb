@@ -15,7 +15,7 @@ class HomeController < ApplicationController
       b = Batch.create
     
       head = all.shift
-      head = head.map{|w|w.downcase}
+      head = head.map{|w|w.downcase if w}
       fn = head.index('fullname')
       bus = head.index('business')
       sch = head.index('school')
