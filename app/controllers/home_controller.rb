@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   require 'csv'
+  require 'human_name_parser'
   
   def upload
     if params['file']
@@ -22,22 +23,25 @@ class HomeController < ApplicationController
       jt = head.index('jobtitle')
       cit = head.index('city')
     
-      if fn && bus && sch
+      if fn && bus
         all.each do |a|
-          r = b.rows.find_or_create_by(name:a[fn],school:a[sch],business:a[bus])
+          r = b.rows.find_or_create_by(name:a[fn],business:a[bus])
+          parsed = HumanNameParser.parse(r.name)
+          r.firstname = parsed.first.downcase
+          r.lastname = parsed.last.downcase
           r.jobtitle = a[jt] if jt
+          r.school = a[sch] if sch
           r.city = a[cit] if cit
           r.save!
         end
+        HardWorker.perform_async(batch=b.id)
+        flash[:notice] = 'File Uploaded'
+      else
+        debugger
+        flash[:notice] = 'Error'
       end
-      
-      HardWorker.perform_async(batch=b.id)
-      flash[:notice] = 'File Uploaded'
-    else
-      flash[:notice] = 'Error'
+      redirect_to '/'
     end
-    redirect_to '/'
-    
   end
 
   def index

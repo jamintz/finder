@@ -4,7 +4,7 @@
 <% end %>
 <h1>Profile Finder</h1>
 <h3>New Batch</h3>
-<p>Upload a CSV containing the headers "fullname", "school", "business", and an optional "jobtitle" and "city". For a record to be searched "fullname" must be populated with either "school" or "business" (or both)</p>
+<p>Upload a CSV containing the headers "fullname" and "business", and an optional "jobtitle", "school", and "city". For a record to be searched "fullname" must be populated with either "school" or "business" (or both)</p>
  <%= form_for :home, :url => {:action => "upload", :method => "post"}, :html => { :multipart => true } do %>
       <div>
         <%= file_field_tag :file %>
