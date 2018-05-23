@@ -19,10 +19,15 @@ class HomeController < ApplicationController
       fn = head.index('fullname')
       bus = head.index('business')
       sch = head.index('school')
+      jt = head.index('jobtitle')
+      cit = head.index('city')
     
       if fn && bus && sch
         all.each do |a|
-          b.rows.find_or_create_by(name:a[fn],school:a[sch],business:a[bus])
+          r = b.rows.find_or_create_by(name:a[fn],school:a[sch],business:a[bus])
+          r.jobtitle = a[jt] if jt
+          r.city = a[cit] if cit
+          r.save!
         end
       end
       

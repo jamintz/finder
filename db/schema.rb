@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201154840) do
+ActiveRecord::Schema.define(version: 20180523140556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,9 @@ ActiveRecord::Schema.define(version: 20180201154840) do
     t.string   "profiles"
     t.boolean  "checked",    default: false
     t.boolean  "unique"
+    t.string   "jobtitle"
+    t.string   "city"
+    t.string   "pro_path"
   end
 
 end

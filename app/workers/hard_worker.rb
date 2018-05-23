@@ -27,28 +27,60 @@ class HardWorker
   def perform(bid)
     b = Batch.find(bid)
     b.rows.each do |r|
-      term = "linkedin #{r.name} \"#{r.school}\" #{r.business}"
-      url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
-            
-      out = get_links(url,r)
-      if r.business && out.empty?
-        term = "linkedin #{r.name} \"#{r.school}\""
-        url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(term)}"
-        out += get_links(url,r)
-      end
-      
-      out.uniq!
-      
+      terms = [
+        ["www.linkedin.com #{r.name} #{r.business} \"#{r.school}\" #{r.jobtitle}",'all'],
+        ["www.linkedin.com #{r.name} #{r.business} \"#{r.school}\"",'name/biz/school'],
+        ["www.linkedin.com #{r.name} #{r.business} #{r.jobtitle}",'name/biz/jobtitle'],
+        ["www.linkedin.com #{r.name} #{r.business} #{r.city}",'name/biz/city']]
+        
+        allout = []
+        
+        output = nil
+        reason = nil
+        terms.each do |t|
+          url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(t.first)}"
+          out = get_links(url,r)
+          out.compact.uniq!
+          
+          allout << out    
+          if out.count == 1
+            output = out
+            reason = t.last
+            break
+          end
+        end
+        
+        if !output
+          h = Hash.new(0)
+          allout2 = allout.flatten.compact
+          allout2.each{|x|h[x]+=1}
+          sort = h.sort_by{|_,v|v}
+          max = sort.last.last
+          top = h.select{|_,v|v==max}
+          
+          if top.count == 1
+            output = top.keys
+            reason = 'most common across all'
+          else
+            allout.each_with_index do |x,i|
+              if !x.empty?
+                output = x
+                reason = "#{terms[i].last} best multiple"
+              end
+            end
+          end
+        end
+
       r.checked = true
-      if out.count == 1
+      if output.count == 1
         r.unique = true
-      elsif out.count > 1
+      elsif output.count > 1
         r.unique = false
       else
         r.unique = nil
       end
-      
-      r.profiles = out
+      r.pro_path = reason
+      r.profiles = output
       r.save!
     end
       
