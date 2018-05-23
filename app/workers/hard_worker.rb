@@ -18,24 +18,26 @@ class HardWorker
       if results.empty?
         results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.lastname.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com')&&!x[:displayUrl].include?('/dir/')}
         if !results.empty?
+          results.uniq!
+          scores = []
           results.each do |res|
             rec = res[:name]
-            pp rec
-            pp score
-            pp ""
             score = 0
             down = rec.downcase
             fn = down.split(r.lastname).first.strip
             score += 5 if FuzzyMatch.new([fn]).find(r.firstname)
-            score += 3 if down.include?(r.business.downcase)
-            score += 2 if down.include?(r.jobtitle.downcase)
-            results.delete(res) if score < 5 
+            score += 3 if r.business && down.include?(r.business.downcase)
+            score += 2 if r.jobtitle && down.include?(r.jobtitle.downcase)
+            scores << score
           end     
+          ts = scores.max
+          results.each_with_index{|x,i|results.delete(x) if scores[i] < ts}
         end
       end
     end
     
     profiles = results.map{|x|x[:displayUrl]}
+    profiles.reject!{|x|!x.include?('//www.linkedin.com')} if profiles.any?{|x|x.include?('//www.linkedin.com')}
     out = []
     profiles.each do |p|
       broke=(p.split("://").first+"://www.linkedin.com"+p.split("linkedin.com").last).split("in/")
@@ -55,7 +57,7 @@ class HardWorker
         
         allout = []
         
-        output = nil
+        output = []
         reason = nil
         terms.each_with_index do |t,i|
           
@@ -88,7 +90,7 @@ class HardWorker
           end
         end
         
-        if !output && !allout.empty?
+        if output.empty? && !allout.flatten.compact.empty?
           h = Hash.new(0)
           allout2 = allout.flatten.compact
           allout2.each{|x|h[x]+=1}
