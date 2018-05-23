@@ -50,10 +50,10 @@ class HardWorker
     b = Batch.find(bid)
     b.rows.each do |r|
       terms = [
-        ["www.linkedin.com #{r.name} #{r.business} \"#{r.school}\" #{r.jobtitle}",'all'],
-        ["www.linkedin.com #{r.name} #{r.business} \"#{r.school}\"",'name/biz/school'],
-        ["www.linkedin.com #{r.name} #{r.business} #{r.jobtitle}",'name/biz/jobtitle'],
-        ["www.linkedin.com #{r.name} #{r.business} #{r.city}",'name/biz/city']]
+        ["linkedin #{r.name} #{r.business} \"#{r.school}\" #{r.jobtitle}",'all'],
+        ["linkedin #{r.name} #{r.business} \"#{r.school}\"",'name/biz/school'],
+        ["linkedin #{r.name} #{r.business} #{r.jobtitle}",'name/biz/jobtitle'],
+        ["linkedin #{r.name} #{r.business} #{r.city}",'name/biz/city']]
         
         allout = []
         
