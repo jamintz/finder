@@ -37,7 +37,6 @@ class HomeController < ApplicationController
         HardWorker.perform_async(batch=b.id)
         flash[:notice] = 'File Uploaded'
       else
-        debugger
         flash[:notice] = 'Error'
       end
       redirect_to '/'

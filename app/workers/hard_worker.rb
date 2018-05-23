@@ -93,7 +93,6 @@ class HardWorker
           allout2 = allout.flatten.compact
           allout2.each{|x|h[x]+=1}
           sort = h.sort_by{|_,v|v}
-          debugger
           max = sort.last.last
           top = h.select{|_,v|v==max}
           
