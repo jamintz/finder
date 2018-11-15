@@ -60,6 +60,8 @@ GEM
     fuzzy_match (2.0.4)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    httparty (0.16.2)
+      multi_xml (>= 0.5.2)
     human_name_parser (1.0.1)
     i18n (0.9.1)
       concurrent-ruby (~> 1.0)
@@ -83,6 +85,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.1)
     multi_json (1.13.1)
+    multi_xml (0.6.0)
     nio4r (2.2.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -179,6 +182,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.2)
   fuzzy_match
+  httparty
   human_name_parser
   jbuilder (~> 2.5)
   jquery-rails

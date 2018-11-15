@@ -3,6 +3,10 @@ class HardWorker
   require 'csv'
   require 'net/http'
   require 'fuzzy_match'
+  require 'httparty'
+  
+  BAD_STARTS = ['sales','info','help','contact','support']
+  BAD_ENDS = ['finance.yahoo.com']
   
   def get_links(url,r)
     key = '86a28e1d290341a698bc74b295a0b0ec'
@@ -45,16 +49,55 @@ class HardWorker
     end
     return out.uniq
   end
+  
+  def get_email first,last,company
+      key = '2d25df043bdd7f08b70ed1fdcbcb827667fa759d'
+      company = URI.encode(company)
+      url = "https://api.hunter.io/v2/email-finder?company=#{company}&first_name=#{URI.encode(first)}&last_name=#{URI.encode(last)}&api_key=#{key}"
+      resp = HTTParty.get(url)
+      if resp['data'] && resp['data']['score'] && resp['data']['score'] > 85
+        return resp
+      end
+  end
+  
+  def check_valid email
+    return nil if BAD_STARTS.include?(email.split('@').first)
+    return nil if BAD_ENDS.include?(email.split('@').last)
+    
+    zerokey = '97adac03bf7f40d89ffc742a188e5266'
+    
+    checkURL = "https://api.zerobounce.net/v1/getcredits?apikey=#{zerokey}"
+    resp = HTTParty.get(checkURL)
+    credits = JSON.parse(resp.body)['Credits'].to_i
+    
+    valURL = "https://api.zerobounce.net/v1/validate?apikey=#{zerokey}&email=#{URI.encode(email)}"
+    resp = HTTParty.get(valURL)
+    valid = JSON.parse(resp.body)['status']
+    
+    return valid
+  end
 
   def perform(bid)
     b = Batch.find(bid)
     b.rows.each do |r|
+      
+      em = get_email(r.firstname,r.lastname,r.business)
+      if em
+        email = em['data']['email']
+        if email
+          check = check_valid(email)
+          if check == 'Valid'
+            r.email = email
+          end
+        end
+      end
+      
       terms = [
         ["linkedin #{r.name} #{r.business} \"#{r.school}\" #{r.jobtitle}",'all'],
         ["linkedin #{r.name} #{r.business} \"#{r.school}\"",'name/biz/school'],
         ["linkedin #{r.name} #{r.business} #{r.jobtitle}",'name/biz/jobtitle'],
         ["linkedin #{r.name} #{r.business} #{r.city}",'name/biz/city']]
-        
+                
         allout = []
         
         output = []

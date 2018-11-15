@@ -4,7 +4,7 @@ class Batch < ApplicationRecord
   def self.to_csv params
     b = Batch.find(params['batch'])
     
-    head = ['name','school','business','profiles']
+    head = ['name','school','business','email','profiles']
     CSV.generate({}) do |csv|
       csv << head
       b.rows.each do |r|

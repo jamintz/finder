@@ -55,6 +55,13 @@ class HomeController < ApplicationController
      end
   end
   
+  def rerun
+    b = Batch.find(params['batch'])
+    b.destroy
+    flash[:notice] = 'Batch Destroyed'
+    redirect_to '/'
+  end
+  
   def delete
     b = Batch.find(params['batch'])
     b.destroy

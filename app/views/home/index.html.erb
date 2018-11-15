@@ -20,8 +20,11 @@
 		<th>Checked</th>
 		<th>Hits</th>
 		<th>Unique Hits</th>
+		<th>Emails</th>
 		<th>Download</th>
 		<th>Delete</th>
+		<th>Re-run</th>
+        
 	</tr>
 <% @batches.each do |b|%>
 	<tr>
@@ -30,6 +33,7 @@
 		<td><%=b.rows.where(checked:true).count%></td>
 		<td><%=b.rows.where.not(unique:nil).count%></td>
 		<td><%=b.rows.where(unique:true).count%></td>
+		<td><%=b.rows.where.not(email:nil).count%></td>
 		<td>
 	<form action="/home/download.csv">
 		<input id="batch" name="batch" type="hidden" value=<%=b.id%> />
@@ -39,6 +43,10 @@
 <td><form action="/home/delete.csv">
 		<input id="batch" name="batch" type="hidden" value=<%=b.id%> />
 	    <input type="submit" value="Delete">
+	</form></td>
+<td><form action="/home/rerun.csv">
+		<input id="batch" name="batch" type="hidden" value=<%=b.id%> />
+	    <input type="submit" value="Rerun">
 	</form></td>
 </tr>
 <% end %>

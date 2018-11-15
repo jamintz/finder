@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   post 'home/upload'
   get '/home/download'
   get '/home/delete'
+  get '/home/rerun'
+  
 end
