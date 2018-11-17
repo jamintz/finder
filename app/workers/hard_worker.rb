@@ -9,7 +9,7 @@ class HardWorker
   BAD_ENDS = ['finance.yahoo.com']
   
   def get_links(url,r)
-    key = '86a28e1d290341a698bc74b295a0b0ec'
+    key = '10208e071a144c28a5a650c29206de61'
     
     uri = URI(url)
     req = Net::HTTP::Get.new(uri.request_uri)
@@ -81,13 +81,15 @@ class HardWorker
     b = Batch.find(bid)
     b.rows.each do |r|
       
-      em = get_email(r.firstname,r.lastname,r.business)
-      if em
-        email = em['data']['email']
-        if email
-          check = check_valid(email)
-          if check == 'Valid'
-            r.email = email
+      if r.business && r.firstname && r.lastname
+        em = get_email(r.firstname,r.lastname,r.business)
+        if em
+          email = em['data']['email']
+          if email
+            check = check_valid(email)
+            if check == 'Valid'
+              r.email = email
+            end
           end
         end
       end
@@ -121,7 +123,7 @@ class HardWorker
             next
           end
             
-          url = "https://api.cognitive.microsoft.com/bing/v5.0/search?q=#{URI.encode(t.first)}"
+          url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.encode(t.first)}"
           out = get_links(url,r)
           out.compact.uniq!
           
