@@ -159,6 +159,7 @@ class HardWorker
       r.checked = true
       if output.count == 1
         r.unique = true
+        HTTParty.get("http://la-profiler.herokuapp.com/scrapes/get?url=#{URI.encode(output.first)}")
       elsif output.count > 1
         r.unique = false
       else

@@ -57,8 +57,8 @@ class HomeController < ApplicationController
   
   def rerun
     b = Batch.find(params['batch'])
-    b.destroy
-    flash[:notice] = 'Batch Destroyed'
+    HardWorker.perform_async(batch=b.id)
+    flash[:notice] = 'Rerunning batch'
     redirect_to '/'
   end
   
