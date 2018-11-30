@@ -18,9 +18,9 @@ class HardWorker
     body = JSON.parse(res.body, :symbolize_names => true)
     results = []
     if body[:webPages] && body[:webPages][:value]
-      results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.name.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com')&&!x[:displayUrl].include?('/dir/')}
+      results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.name.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com/in')&&!x[:displayUrl].include?('/dir/')}
       if results.empty?
-        results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.lastname.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com')&&!x[:displayUrl].include?('/dir/')}
+        results = body[:webPages][:value].select{|x|x[:name] && x[:name].downcase.include?(r.lastname.downcase) && x[:displayUrl] && x[:displayUrl].include?('linkedin.com/in')&&!x[:displayUrl].include?('/dir/')}
         if !results.empty?
           results.uniq!
           scores = []
